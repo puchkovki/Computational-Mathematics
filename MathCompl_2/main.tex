@@ -1,0 +1,76 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, russian]{babel}
+\usepackage{amsmath, amsfonts, amssymb, amsthm, mathtools, forest}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{forest}
+\usepackage{float}
+\usepackage[a4paper, left=20mm, right=10mm, top=20mm, bottom=20mm]{geometry}
+
+\title{Comp Math 2}
+\author{puchkovki}
+
+\begin{document}
+
+\maketitle
+
+\section*{Погрешности}
+
+Оценим теоретическое влияние погрешности коэффициентов матрицы 2x2 на детерминант матрицы. Пусть a, b, c, d - коэффициенты данной матрицы, а $\gamma$ — их погрешность. Тогда: \\
+\\
+$\begin{vmatrix}
+  a+\gamma& b+\gamma\\
+  c+\gamma& d+\gamma
+\end{vmatrix} -\begin{vmatrix}
+  a& b\\
+  c& d
+\end{vmatrix}  = ad+ (a+d)\gamma + \gamma^2 - cb - (b+c)\gamma - \gamma^2 - ad + cb = (a + d - c - b)\gamma $
+
+\section*{Оценка погрешности при переходе между сетками с шагами $2\cdot10^{-4}$ и $2\cdot10^{-5}$ соответственно в точке $(-0.5, -0.5)$}
+
+Для оценки ошибки на нескольких сетках использовать экстраполяцию Ричардсона. Основная идея: если производная $f_h'(x)$ вычисляется по формуле с порядком аппроксимации $p$, то справедлива формула:
+
+\[f_h'(x) = f'(x) + C_1\cdot h^p\]
+
+с некоторой величиной $C_1$. При вычисленни производной с шагом $\frac{h}{10}$ можно записать аналогичное соотношение
+
+\[f_{\frac{h}{10}}'(x) = f'(x) + C_2\cdot \left(\frac{h}{10}\right)^p\]
+с некоторой величиной $C_2$. Пологая $C_1=C_2=C$ и решая систему, получаем:
+\[C\cdot h^p = \frac{f_h'(x)-f_{\frac{h}{10}}'(x)}{1-10^{-p}},\]
+
+откуда получаем абсолютную погрешность. 
+\[f''_{xx_{h}} = \frac{f(x+h, y) + f(x-h, y) - 2\cdot f(x,y)}{4\cdot h^2} =\]
+
+\[\frac{f(x, y) + h\cdot f'_x+\frac{h^2}{2}\cdot f_{xx}''+ C_1\cdot h^3 + f(x, y) - h\cdot f'_x+\frac{h^2}{2}\cdot f_{xx}''+ C_2\cdot h^3 - 2\cdot f(x,y)}{4\cdot h^2} = \]
+
+\[f_{xx}'' + C\cdot h\]
+
+Следовательно, порядок аппроксимации $p$ равен 1. Аналогично для $f_{yy}''$.
+
+\[f''_{xy_{h}} = \frac{f(x+h, y+h) - f(x+h,y-h) + f(x-h, y-h) - f(x-h,y+h)}{4\cdot h^2} =\]
+
+\[\frac{f(x, y) + h\cdot f'_x  + h\cdot f'_y + \frac{h^2}{2}\cdot f_{xx}''+ \frac{h^2}{2}\cdot f_{yy}'' + h^2\cdot f_{xy}'' + C_1\cdot h^3}{4\cdot h^2} - \]
+
+\[ - \frac{(f(x, y) + h\cdot f'_x  - h\cdot f'_y + \frac{h^2}{2}\cdot f_{xx}'' + \frac{h^2}{2}\cdot f_{yy}'' - h^2\cdot f_{xy}'' + C_2\cdot h^3)}{4\cdot h^2} + \]
+
+\[ + \frac{f(x, y) - h\cdot f'_x  - h\cdot f'_y + \frac{h^2}{2}\cdot f_{xx}'' + \frac{h^2}{2}\cdot f_{yy}'' + h^2\cdot f_{xy}'' + C_3\cdot h^3)}{4\cdot h^2} - \]
+
+\[ - \frac{(f(x, y) - h\cdot f'_x  + h\cdot f'_y + \frac{h^2}{2}\cdot f_{xx}'' + \frac{h^2}{2}\cdot f_{yy}'' - h^2\cdot f_{xy}'' + C_4\cdot h^3)}{4\cdot h^2} = f_{xy}'' + C\cdot h\]
+
+\begin{itemize}
+    \item $xx: C\cdot h = \frac{10}{9} \cdot (0.2203932716 - 0.2203932696) = \frac{10}{9} \cdot 2\cdot 10^{-9} = \frac{20}{9}  \cdot 10^{-9} = \gamma$
+    \item $yy: C\cdot h = \frac{10}{9} \cdot (0.2203932716 - 0.2203932696) = \frac{10}{9} \cdot 2\cdot 10^{-9} = \frac{20}{9}  \cdot 10^{-9} = \gamma$
+    \item $xy: C\cdot h = \frac{10}{9} \cdot (1.537096842 - 1.53709686) = \frac{10}{9} \cdot -18\cdot 10^{-9} = -2 \cdot 10^{-8} = \alpha$
+\end{itemize}
+
+$\begin{vmatrix}
+  a+\gamma& c+\alpha\\
+  c+\alpha& b+\gamma
+\end{vmatrix} -\begin{vmatrix}
+  a& c\\
+  c& d
+    \end{vmatrix}  = (a + b)\cdot\gamma - 2\cdot\alpha\cdot c + \gamma^2-\alpha^2 = (0.2203932696 +0.2203932696)\cdot \frac{20}{9}\cdot 10^{-9} - 2\cdot 1,53709686 \cdot (-2)\cdot 10^{-8} + (\frac{20}{9}\cdot 10^{-9})^2 - ((-2)\cdot 10^{-8})^2 = 0.98\cdot 10^{-9} + 61.48\cdot 10^{-9} = 62,5\cdot 10^{-9}$
+\end{document}
