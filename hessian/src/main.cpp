@@ -1,9 +1,10 @@
+// Copyright [2019] <Puchkov Kyryll>
 #include <iostream>     // Input/output operations
 #include <cmath>        // Square root
 #include <vector>       // Storing information in std::vector
 #include <fstream>      // File managing
 
-// Grid fineness for solution 
+// Grid fineness for solution
 #define FINENESS 1000
 
 // Table cell width
@@ -61,14 +62,13 @@ double Hessian(func f, double x, double y, double h_x, double h_y) {
 }
 
 int main(void) {
-
     // Grid cell width
     double step = 2.0 / FINENESS;
 
     // Working space, storing value of Hessian
     vector<vector<double> > field(FINENESS, vector<double>(FINENESS));
 
-    // Calculating process for each grid node 
+    // Calculating process for each grid node
     for (size_t i = 0; i < FINENESS; ++i) {
         for (size_t j = 0; j < FINENESS; ++j) {
             field[i][j] = Hessian(F, -1.0 + j * step, -1 + i * step, step, step);
@@ -107,18 +107,17 @@ int main(void) {
     values << "F_yy(x, y)";
     values.width(WDTH);
     values << "Hessian" << endl;
-    
-    for(size_t i = 0; i < 8 * WDTH; ++i) {
+
+    for (size_t i = 0; i < 8 * WDTH; ++i) {
         values << "-";
     }
     values << endl;
 
     values.precision(10);
-    
     // Writing
     for (double x = -1; x < -1.0 / 100; x /= 2) {
         for (double y = -1; y < -1.0 / 100; y /= 2) {
-            for(size_t i = 10; i <= 100000; i *= 10) {
+            for (size_t i = 10; i <= 100000; i *= 10) {
                 step = 2.0 / i;
                 values.width(WDTH);
                 values << step;
@@ -137,12 +136,12 @@ int main(void) {
                 values.width(WDTH);
                 values << Hessian(F, x, y, step, step) << endl;
             }
-            for(size_t i = 0; i < 8 * WDTH; ++i) {
+            for (size_t i = 0; i < 8 * WDTH; ++i) {
                 values << "-";
             }
             values << endl;
         }
-        for(size_t i = 0; i < 8 * WDTH; ++i) {
+        for (size_t i = 0; i < 8 * WDTH; ++i) {
             values << "-";
         }
         values << endl;
@@ -174,7 +173,7 @@ int main(void) {
     // Writing
     for (double x = -1; x < -1.0 / 100; x /= 2) {
         for (double y = -1; y < -1.0 / 100; y /= 2) {
-            for(size_t i = 10; i <= 100000; i *= 10) {
+            for (size_t i = 10; i <= 100000; i *= 10) {
                 step = 2.0 / i;
                 values << step << ";";
                 values << x << ";";
@@ -189,5 +188,4 @@ int main(void) {
     }
 
     values.close();
-
 }
